@@ -25,7 +25,7 @@ jobs:
         name: Determine next version
         id: version
         run: |
-          current_version=$(docker pull joelralte/nodewebapi | grep "nodewebapi" | awk '{split($0,a,":"); print a[3]}')
+          current_version=$(docker pull joelralte/nodewebapi:latest | grep "latest" | awk '{split($0,a,":"); print a[2]}')
           next_version=$(echo "$current_version + 0.1" | bc)
           echo "::set-output name=next_version::$next_version"
       -
