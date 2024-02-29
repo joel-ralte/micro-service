@@ -22,10 +22,17 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
+        name: Determine next version
+        id: version
+        run: |
+          current_version=$(docker pull joelralte/nodewebapi | grep "nodewebapi" | awk '{split($0,a,":"); print a[3]}')
+          next_version=$(echo "$current_version + 0.1" | bc)
+          echo "::set-output name=next_version::$next_version"
+      -
         name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
+          tags: joelralte/nodewebapi:${{ steps.version.outputs.next_version }}
