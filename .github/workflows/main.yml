@@ -22,20 +22,7 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
-        name: Pull current version
-        id: pull_version
+        name: Build and push
         run: |
-          echo "::set-output name=version::$(docker pull joelralte/nodewebapi:latest | grep "latest" | awk '{split($0,a,":"); print a[2]}')"
-      -
-        name: Calculate next version
-        id: calculate_version
-        run: |
-          current_version=${{ steps.pull_version.outputs.version }}
-          next_version=$(echo "$current_version + 0.1" | bc)
-          echo "::set-output name=next_version::$next_version"
-      -
-        name: Tag image
-        run: docker tag joelralte/nodewebapi:latest joelralte/nodewebapi:${{ steps.calculate_version.outputs.next_version }}
-      -
-        name: Push image
-        run: docker push joelralte/nodewebapi:${{ steps.calculate_version.outputs.next_version }}
+          docker build -t joelralte/nodewebapi:latest .
+          docker push joelralte/nodewebapi:latest
